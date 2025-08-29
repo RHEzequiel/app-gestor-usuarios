@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Gestión de Alumnos</title>
+
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+        <style>
+            /* Reset básico */
+            *, *::before, *::after {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                font-family: 'instrument-sans', sans-serif;
+                background-color: #0f172a;
+                color: #f1f5f9;
+                min-height: 100vh;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 2rem;
+                min-height: 100vh;
+                display: flex;
+                flex-direction: column;
+            }
+            .header {
+                text-align: center;
+                margin-bottom: 4rem;
+            }
+            .title {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 1.5rem;
+            }
+            .card-container {
+                display: grid;
+                grid-template-columns: repeat(1, 1fr);
+                gap: 2rem;
+                margin-bottom: 3rem;
+                flex-grow: 1;
+            }
+            @media (min-width: 768px) {
+                .card-container {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+            }
+            .card {
+                background-color: #1e293b;
+                border-radius: 0.75rem;
+                padding: 2rem;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            .card-title {
+                font-size: 1.5rem;
+                font-weight: 600;
+                margin-bottom: 1rem;
+            }
+            .card-content {
+                margin-bottom: 1.5rem;
+                line-height: 1.6;
+                flex-grow: 1;
+            }
+            .btn {
+                display: block;
+                width: 100%;
+                padding: 0.75rem 1rem;
+                text-align: center;
+                font-weight: 600;
+                border-radius: 0.5rem;
+                text-transform: uppercase;
+                font-size: 0.875rem;
+                cursor: pointer;
+                transition: all 0.2s;
+                text-decoration: none;
+            }
+            .btn-blue {
+                background-color: #2563eb;
+                color: white;
+            }
+            .btn-blue:hover {
+                background-color: #1d4ed8;
+                text-decoration: none;
+            }
+            .btn-green {
+                background-color: #10b981;
+                color: white;
+            }
+            .btn-green:hover {
+                background-color: #059669;
+                text-decoration: none;
+            }
+            .btn-disabled {
+                background-color: #475569;
+                color: white;
+                cursor: not-allowed;
+            }
+            .footer {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding-top: 3rem;
+                border-top: 1px solid #334155;
+                font-size: 0.875rem;
+                color: #94a3b8;
+                margin-top: 2rem;
+            }
+            @media (min-width: 640px) {
+                .footer {
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+            }
+            .nav {
+                display: flex;
+                justify-content: flex-end;
+                padding: 1.5rem 0;
+                margin-bottom: 2rem;
+            }
+            .nav-link {
+                color: #e2e8f0;
+                text-decoration: none;
+                margin-left: 1.5rem;
+                font-weight: 500;
+                padding: 0.5rem 1rem;
+                border-radius: 0.375rem;
+                transition: all 0.2s;
+            }
+            .nav-link:hover {
+                background-color: #334155;
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            @if (Route::has('login'))
+                <div class="nav">
+                    @auth
+                        <a href="{{ url('/dashboard') }}" class="nav-link">Panel Principal</a>
+                    @else
+                        <a href="{{ route('login') }}" class="nav-link">Iniciar Sesión</a>
+
+                        @if (Route::has('register'))
+                            <a href="{{ route('register') }}" class="nav-link">Registrarse</a>
+                        @endif
+                    @endauth
+                </div>
+            @endif
+
+            <div class="header">
+                <h1 class="title">Sistema de Gestión de Alumnos</h1>
+            </div>
+
+            <div class="card-container">
+                <div class="card">
+                    <h2 class="card-title">Para Docentes</h2>
+                    <p class="card-content">
+                        Si eres docente, puedes acceder al sistema para gestionar a todos los alumnos registrados. Visualiza perfiles, información de contacto y más.
+                    </p>
+                    @auth
+                        @if(Auth::user()->is_admin)
+                            <a href="{{ route('admin.users.index') }}" class="btn btn-blue">
+                                VER LISTADO DE USUARIOS
+                            </a>
+                        @else
+                            <span class="btn btn-disabled">
+                                ACCESO SOLO PARA ADMINISTRADORES
+                            </span>
+                        @endif
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-blue">
+                            INICIAR SESIÓN COMO DOCENTE
+                        </a>
+                    @endauth
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">Para Alumnos</h2>
+                    <p class="card-content">
+                        Como alumno, puedes registrarte en el sistema, gestionar tu perfil, actualizar tu información de contacto y más.
+                    </p>
+                    @auth
+                        <a href="{{ route('admin.users.show', Auth::id()) }}" class="btn btn-green">
+                            VER MI PERFIL
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}" class="btn btn-green">
+                            REGISTRARME COMO ALUMNO
+                        </a>
+                    @endauth
+                </div>
+            </div>
+
+            <div class="footer">
+                <div>
+                    Programación IV - Sistema de Gestión de Alumnos
+                </div>
+                <div>
+                    Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

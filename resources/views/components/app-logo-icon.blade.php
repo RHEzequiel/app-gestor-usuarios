@@ -1,0 +1,1 @@
+<img src="{{ asset('logo_utn.png') }}?v={{ time() }}" alt="Logo UTN" style="width: 100%; height: 100%; object-fit: contain; display: block !important;" {{ $attributes->merge(['class' => 'object-contain']) }} />
