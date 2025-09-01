@@ -16,13 +16,32 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        if (!Auth::user()->is_admin) {
+        /** @var User $user */
+        $user = Auth::user();
+        
+        // Solo administradores y profesores pueden ver listados
+        if (!$user->isAdmin() && !$user->isProfesor()) {
             abort(403);
         }
         
-        $users = User::all();
+        // Los administradores ven todos los usuarios
+        if ($user->isAdmin()) {
+            $users = User::all();
+        }
+        // Los profesores solo ven alumnos
+        else {
+            $query = User::where('role', 'alumno');
+            
+            // Si hay búsqueda por teléfono
+            if ($request->filled('search_phone')) {
+                $searchPhone = $request->search_phone;
+                $query->where('phone', 'like', '%' . $searchPhone . '%');
+            }
+            
+            $users = $query->get();
+        }
         
         return view('admin.users.index', compact('users'));
     }
@@ -32,7 +51,16 @@ class UserController extends Controller
      */
     public function show(User $user): View
     {
-        if (!Auth::user()->is_admin && Auth::id() !== $user->id) {
+        /** @var User $authUser */
+        $authUser = Auth::user();
+        
+        // Verificar permisos: admins ven todo, profesores ven alumnos, usuarios ven su propio perfil
+        if (!$authUser->isAdmin() && !$authUser->isProfesor() && Auth::id() !== $user->id) {
+            abort(403);
+        }
+        
+        // Si es profesor, solo puede ver alumnos (excepto su propio perfil)
+        if ($authUser->isProfesor() && Auth::id() !== $user->id && !$user->isAlumno()) {
             abort(403);
         }
         
@@ -44,7 +72,11 @@ class UserController extends Controller
      */
     public function edit(User $user): View
     {
-        if (!Auth::user()->is_admin && Auth::id() !== $user->id) {
+        /** @var User $authUser */
+        $authUser = Auth::user();
+        
+        // Solo admins pueden editar cualquier usuario, otros solo su propio perfil
+        if (!$authUser->isAdmin() && Auth::id() !== $user->id) {
             abort(403);
         }
         

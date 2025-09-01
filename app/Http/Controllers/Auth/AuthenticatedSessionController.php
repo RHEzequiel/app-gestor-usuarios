@@ -26,9 +26,49 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        // Los administradores deben usar /admin para iniciar sesión
+        if ($user->isAdmin()) {
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Los administradores deben usar el acceso administrativo en /admin',
+            ])->onlyInput('email');
+        }
+        
+        // Validar que el rol del usuario coincida con el rol seleccionado
+        $intendedRole = $request->input('intended_role');
+        if ($intendedRole) {
+            if ($intendedRole === 'profesor' && !$user->isProfesor()) {
+                Auth::logout();
+                return back()->withErrors([
+                    'intended_role' => 'Este usuario no es profesor. Selecciona "Alumno" si eres alumno.',
+                ])->withInput();
+            }
+            
+            if ($intendedRole === 'alumno' && !$user->isAlumno()) {
+                Auth::logout();
+                return back()->withErrors([
+                    'intended_role' => 'Este usuario no es alumno. Selecciona "Profesor" si eres profesor.',
+                ])->withInput();
+            }
+        }
+        
         $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+        
+        // Redireccionar según el rol del usuario (solo profesores y alumnos)
+        if ($user->isProfesor()) {
+            return redirect()->intended(route('profesor.dashboard', absolute: false));
+        } elseif ($user->isAlumno()) {
+            return redirect()->intended(route('alumno.dashboard', absolute: false));
+        } else {
+            // Si llega aquí, hay un problema - no debería pasar
+            Auth::logout();
+            return back()->withErrors([
+                'email' => 'Error en el sistema: rol de usuario no válido.',
+            ])->onlyInput('email');
+        }
     }
 
     /**

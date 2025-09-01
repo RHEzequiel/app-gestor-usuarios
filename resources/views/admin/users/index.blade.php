@@ -8,16 +8,38 @@
     <div class="py-4">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="content-card bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
-                <div class="px-6 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 border-b flex justify-between items-center">
+                <div class="px-6 py-4 bg-gradient-to-r from-gray-500 to-gray-600 border-b flex justify-between items-center">
                     <h3 class="text-lg font-bold text-white">Usuarios registrados</h3>
-                    <span class="bg-white text-indigo-800 px-3 py-1 rounded-full text-xs font-semibold shadow">
+                    <span class="bg-white text-gray-800 px-3 py-1 rounded-full text-xs font-semibold shadow">
                         Total: {{ count($users) }}
                     </span>
                 </div>
         
         <div class="p-6 text-gray-900">
+            @if(Auth::user()->isProfesor())
+                <div class="mb-6 bg-green-50 p-4 rounded-lg border border-green-200">
+                    <h4 class="font-medium text-green-800 mb-3">Buscar Alumno por Teléfono</h4>
+                    <form method="GET" action="{{ route('admin.users.index') }}" class="flex gap-3">
+                        <input 
+                            type="text" 
+                            name="search_phone" 
+                            value="{{ request('search_phone') }}"
+                            placeholder="Ingrese número de teléfono..." 
+                            class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"
+                        >
+                        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
+                            Buscar
+                        </button>
+                        @if(request('search_phone'))
+                            <a href="{{ route('admin.users.index') }}" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600">
+                                Limpiar
+                            </a>
+                        @endif
+                    </form>
+                </div>
+            @endif
 
-                    <div class="overflow-x-auto">
+            <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>

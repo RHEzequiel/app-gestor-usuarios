@@ -1,29 +1,59 @@
 <x-guest-layout>
     <div class="mb-8 text-center">
-        <h2 class="text-2xl font-bold text-indigo-700">Crear Cuenta Nueva</h2>
-        <p class="text-gray-500 mt-2">Complete el formulario para registrarse</p>
+        <h2 class="text-2xl font-bold text-white">Crear Cuenta Nueva</h2>
+        <p class="text-white mt-2">Selecciona tu rol y completa el formulario</p>
     </div>
 
     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
 
+        <!-- Role Selection - PRIMERO -->
+        <div class="mb-6">
+            <x-input-label for="role" :value="__('Tipo de Usuario')" class="text-white font-semibold mb-3" />
+            <div class="flex gap-4">
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="role" value="profesor" class="sr-only" required>
+                    <div class="role-selector bg-red-100 border-2 border-red-300 text-red-700 px-6 py-4 rounded-lg hover:bg-red-200 transition-all text-center">
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.84L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.84l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.75 2.524z" />
+                            </svg>
+                            <span class="font-semibold">📚 Profesor</span>
+                        </div>
+                    </div>
+                </label>
+                <label class="flex-1 cursor-pointer">
+                    <input type="radio" name="role" value="alumno" class="sr-only" required>
+                    <div class="role-selector bg-red-100 border-2 border-red-300 text-red-700 px-6 py-4 rounded-lg hover:bg-red-200 transition-all text-center">
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="font-semibold">🎓 Alumno</span>
+                        </div>
+                    </div>
+                </label>
+            </div>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
+
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Nombre')" class="text-gray-700 font-semibold" />
+            <x-input-label for="name" :value="__('Nombre')" class="text-white font-medium mb-1" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <x-text-input id="name" class="block mt-1 w-full pl-10 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" placeholder="Nombre completo" />
+                <input id="name" class="block mt-1 w-full pl-10 border border-gray-300 rounded-md py-2 bg-white" type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name" placeholder="Nombre completo" style="outline: none !important; box-shadow: none !important; border-color: #d1d5db !important;" />
             </div>
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
         <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" class="text-gray-700 font-semibold" />
+            <x-input-label for="email" :value="__('Email')" class="text-white font-medium mb-1" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
@@ -31,100 +61,138 @@
                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                     </svg>
                 </div>
-                <x-text-input id="email" class="block mt-1 w-full pl-10 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="email" name="email" :value="old('email')" required autocomplete="username" placeholder="tu@email.com" />
+                <input id="email" class="block mt-1 w-full pl-10 border border-gray-300 rounded-md py-2 bg-white" type="email" name="email" value="{{ old('email') }}" required autocomplete="username" placeholder="tu@email.com" style="outline: none !important; box-shadow: none !important; border-color: #d1d5db !important;" />
             </div>
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Contraseña')" class="text-gray-700 font-semibold" />
+            <x-input-label for="password" :value="__('Contraseña')" class="text-white font-medium mb-1" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <x-text-input id="password" class="block mt-1 w-full pl-10 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                <input id="password" class="block mt-1 w-full pl-10 border border-gray-300 rounded-md py-2 bg-white"
                             type="password"
                             name="password"
                             required autocomplete="new-password" 
-                            placeholder="Mínimo 8 caracteres" />
+                            placeholder="Mínimo 8 caracteres"
+                            style="outline: none !important; box-shadow: none !important; border-color: #d1d5db !important;" />
             </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
         </div>
 
         <!-- Confirm Password -->
         <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirmar Contraseña')" class="text-gray-700 font-semibold" />
+            <x-input-label for="password_confirmation" :value="__('Confirmar Contraseña')" class="text-white font-medium mb-1" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <x-text-input id="password_confirmation" class="block mt-1 w-full pl-10 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
+                <input id="password_confirmation" class="block mt-1 w-full pl-10 border border-gray-300 rounded-md py-2 bg-white"
                             type="password"
                             name="password_confirmation" 
                             required autocomplete="new-password"
-                            placeholder="Repite tu contraseña" />
+                            placeholder="Repite tu contraseña"
+                            style="outline: none !important; box-shadow: none !important; border-color: #d1d5db !important;" />
             </div>
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
 
         <!-- Phone -->
         <div class="mt-4">
-            <x-input-label for="phone" :value="__('Teléfono (opcional)')" class="text-gray-700 font-semibold" />
+            <x-input-label for="phone" :value="__('Teléfono (opcional)')" class="text-white font-medium mb-1" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
                     </svg>
                 </div>
-                <x-text-input id="phone" class="block mt-1 w-full pl-10 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="text" name="phone" :value="old('phone')" autocomplete="tel" placeholder="Ej: 612345678" />
+                <input id="phone" class="block mt-1 w-full pl-10 border border-gray-300 rounded-md py-2 bg-white" type="text" name="phone" value="{{ old('phone') }}" autocomplete="tel" placeholder="Ej: 612345678" style="outline: none !important; box-shadow: none !important; border-color: #d1d5db !important;" />
             </div>
             <x-input-error :messages="$errors->get('phone')" class="mt-2" />
         </div>
 
         <!-- Professional URL -->
         <div class="mt-4">
-            <x-input-label for="professional_url" :value="__('Enlace Profesional (opcional)')" class="text-gray-700 font-semibold" />
+            <x-input-label for="professional_url" :value="__('Enlace Profesional (opcional)')" class="text-white font-medium mb-1" />
             <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
                     </svg>
                 </div>
-                <x-text-input id="professional_url" class="block mt-1 w-full pl-10 border-gray-300 rounded-lg focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" type="url" name="professional_url" :value="old('professional_url')" autocomplete="url" placeholder="https://ejemplo.com" />
+                <input id="professional_url" class="block mt-1 w-full pl-10 border border-gray-300 rounded-md py-2 bg-white" type="url" name="professional_url" value="{{ old('professional_url') }}" autocomplete="url" placeholder="https://ejemplo.com" style="outline: none !important; box-shadow: none !important; border-color: #d1d5db !important;" />
             </div>
             <x-input-error :messages="$errors->get('professional_url')" class="mt-2" />
         </div>
 
         <!-- Photo -->
         <div class="mt-4">
-            <x-input-label for="photo" :value="__('Foto de Perfil (obligatorio)')" class="text-gray-700 font-semibold" />
+            <x-input-label for="photo" :value="__('Foto de Perfil (obligatorio)')" class="text-white font-medium mb-1" />
             <div class="mt-1 border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
                 <div class="flex flex-col items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mb-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
                     </svg>
                     <p class="text-sm text-gray-600 mb-2">Sube tu foto de perfil</p>
-                    <input id="photo" class="block w-full text-sm text-indigo-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100" type="file" name="photo" accept="image/*" required />
+                    <input id="photo" class="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200" type="file" name="photo" accept="image/*" required />
                 </div>
             </div>
             <x-input-error :messages="$errors->get('photo')" class="mt-2" />
         </div>
 
         <div class="mt-6">
-            <x-primary-button>
+            <x-primary-button class="w-full bg-gradient-to-r from-red-800 to-red-900 hover:from-red-900 hover:to-red-800 focus:ring-red-500">
                 {{ __('Completar Registro') }}
             </x-primary-button>
         </div>
 
-        <div class="flex items-center justify-center mt-6 pt-4 border-t border-gray-200 text-center">
-            <a class="text-sm text-indigo-600 hover:text-indigo-800 hover:underline transition-colors" href="{{ route('login') }}">
+        <div class="flex items-center justify-center mt-6 pt-4 border-t border-white border-opacity-20 text-center">
+            <a class="text-sm text-white hover:text-white hover:underline transition-colors" href="{{ route('login') }}">
                 {{ __('¿Ya tienes una cuenta? Inicia sesión') }}
             </a>
         </div>
     </form>
+
+    <style>
+        input[type="radio"]:checked + .role-selector {
+            background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%) !important;
+            border-color: #6b7280 !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3) !important;
+        }
+        .role-selector {
+            transition: all 0.2s ease;
+        }
+        .role-selector:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(107, 114, 128, 0.2);
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const radioButtons = document.querySelectorAll('input[name="role"]');
+            radioButtons.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Reset all buttons
+                    document.querySelectorAll('.role-selector').forEach(btn => {
+                        btn.classList.remove('bg-indigo-600', 'border-indigo-600', 'text-white');
+                        // Restore original colors
+                        if (btn.parentNode.querySelector('input[value="profesor"]')) {
+                            btn.classList.add('bg-red-100', 'border-red-300', 'text-red-700');
+                        } else {
+                            btn.classList.add('bg-red-100', 'border-red-300', 'text-red-700');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </x-guest-layout>

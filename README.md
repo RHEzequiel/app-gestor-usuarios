@@ -1,52 +1,264 @@
-# Aplicación de Gestión de Usuarios UTN
+# Sistema de Gestión Escolar UTN
 
-Proyecto desarrollado para la materia Programación IV. Sistema web basado en Laravel 12 y MySQL que implementa un gestor de usuarios con identidad visual de la UTN. Permite a los docentes (rol administrador) ver el listado completo de usuarios, mientras que los alumnos pueden gestionar su perfil personal con foto y enlaces profesionales.
+Sistema web completo desarrollado en Laravel 12 para la gestión de usuarios escolares con autenticación por roles (Administrador, Profesor, Alumno). Incluye diseño responsivo con identidad visual de la UTN, gestión de perfiles con fotografías y funcionalidades específicas por rol.
 
-## Requisitos
+## 🚀 Características Principales
 
-- PHP 8.2 o superior
-- Composer
-- MySQL o SQLite
-- Node.js y npm
-- Servidor web (Apache, Nginx) o el servidor integrado de Laravel
+### Autenticación Multi-Rol
+- **Administrador**: Acceso completo al sistema, gestión de todos los usuarios
+- **Profesor**: Visualización de alumnos y búsqueda por teléfono
+- **Alumno**: Gestión de perfil personal
 
-## Instalación
+### Funcionalidades
+- ✅ Registro e inicio de sesión con selección de rol
+- ✅ Gestión de perfiles con fotografía
+- ✅ Dashboard específico por rol
+- ✅ Búsqueda de alumnos por teléfono (profesores)
+- ✅ Panel administrativo completo
+- ✅ Diseño responsivo con TailwindCSS
+- ✅ Identidad visual UTN integrada
 
-1. Clonar el repositorio:
+### Diseño y UX
+- 🎨 Interfaz moderna y profesional
+- 📱 Totalmente responsivo
+- 🖼️ Subida y gestión de fotografías de perfil
+- 🎯 Iconografía interna personalizada
+- 🏫 Branding institucional UTN
+
+## 📋 Requisitos del Sistema
+
+- **PHP**: 8.2 o superior
+- **Composer**: Para gestión de dependencias PHP
+- **Node.js**: 18.x o superior
+- **NPM**: Para dependencias frontend
+- **MySQL**: 8.0 o superior (o SQLite para desarrollo)
+- **Servidor Web**: Apache, Nginx o servidor integrado de Laravel
+
+## 🛠️ Instalación
+
+### 1. Clonar el Repositorio
 ```bash
-git clone https://github.com/ezequielhramirez/app-gestor-usuarios.git
+git clone https://github.com/RHEzequiel/app-gestor-usuarios.git
 cd app-gestor-usuarios
 ```
 
-2. Instalar dependencias de PHP:
+### 2. Instalar Dependencias Backend
 ```bash
 composer install
 ```
 
-3. Instalar dependencias de JavaScript:
+### 3. Instalar Dependencias Frontend
 ```bash
 npm install
 ```
 
-4. Copiar el archivo de entorno y configurar las variables:
+### 4. Configuración del Entorno
 ```bash
+# Copiar archivo de configuración
 cp .env.example .env
-```
 
-5. Generar la clave de la aplicación:
-```bash
+# Generar clave de aplicación
 php artisan key:generate
 ```
 
-6. Configurar la base de datos en el archivo `.env`:
-```
+### 5. Configuración de Base de Datos
+
+Editar el archivo `.env` con tus credenciales de base de datos:
+
+```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=app_gestor_usuarios
-DB_USERNAME=root
-DB_PASSWORD=
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña
 ```
+
+### 6. Ejecutar Migraciones y Seeders
+```bash
+# Crear las tablas de la base de datos
+php artisan migrate
+
+# Ejecutar seeders (incluye usuario administrador)
+php artisan db:seed
+```
+
+### 7. Crear Enlace Simbólico para Storage
+```bash
+php artisan storage:link
+```
+
+### 8. Compilar Assets Frontend
+```bash
+# Para desarrollo
+npm run dev
+
+# Para producción
+npm run build
+```
+
+### 9. Iniciar Servidor de Desarrollo
+```bash
+php artisan serve
+```
+
+La aplicación estará disponible en: `http://localhost:8000`
+
+## 👤 Usuarios por Defecto
+
+El seeder crea automáticamente un usuario administrador:
+
+- **Email**: `admin@utn.edu.ar`
+- **Contraseña**: `password`
+- **Rol**: Administrador
+
+## 📁 Estructura del Proyecto
+
+```
+app-gestor-usuarios/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/           # Controladores administrativos
+│   │   │   └── Auth/            # Controladores de autenticación
+│   │   └── Requests/            # Form requests de validación
+│   ├── Models/
+│   │   └── User.php             # Modelo principal con roles
+│   └── Policies/                # Políticas de autorización
+├── database/
+│   ├── migrations/
+│   │   ├── *_create_users_table.php
+│   │   └── *_add_additional_fields_to_users_table.php
+│   └── seeders/
+│       ├── AdminUserSeeder.php  # Seeder del administrador
+│       └── DatabaseSeeder.php
+├── resources/
+│   ├── views/
+│   │   ├── admin/               # Vistas administrativas
+│   │   ├── auth/                # Vistas de autenticación
+│   │   ├── dashboards/          # Dashboards por rol
+│   │   └── layouts/             # Layouts base
+│   └── css/                     # Estilos personalizados
+├── routes/
+│   ├── web.php                  # Rutas principales
+│   └── auth.php                 # Rutas de autenticación
+└── public/
+    ├── storage/                 # Enlace simbólico para archivos
+    └── *.png                    # Assets UTN
+```
+
+## 🎯 Uso del Sistema
+
+### Para Administradores
+1. Acceder con credenciales de administrador
+2. Ver listado completo de usuarios registrados
+3. Editar perfiles de cualquier usuario
+4. Gestionar roles y permisos
+
+### Para Profesores
+1. Registrarse seleccionando rol "Profesor"
+2. Acceder al dashboard de profesor
+3. Buscar alumnos por número de teléfono
+4. Ver información de estudiantes
+
+### Para Alumnos
+1. Registrarse seleccionando rol "Alumno"
+2. Completar perfil con fotografía
+3. Gestionar información personal
+4. Acceder al dashboard estudiantil
+
+## 🔐 Seguridad y Permisos
+
+- **Autenticación**: Sistema robusto con validación por roles
+- **Autorización**: Middleware y policies para control de acceso
+- **Validación**: Form requests personalizados para cada operación
+- **Protección CSRF**: Habilitada en todos los formularios
+- **Sanitización**: Validación y limpieza de datos de entrada
+
+## 🎨 Personalización Visual
+
+### Identidad UTN
+- Logo y favicon institucional
+- Paleta de colores oficial
+- Tipografía corporativa
+- Assets gráficos personalizados
+
+### Componentes Reutilizables
+- Sistema de iconografía interna
+- Formularios con validación visual
+- Cards y layouts responsivos
+- Gradientes y efectos modernos
+
+## 📱 Características Técnicas
+
+### Backend
+- **Framework**: Laravel 12
+- **Base de Datos**: MySQL con migraciones
+- **Autenticación**: Laravel Breeze extendido
+- **Validación**: Form Requests personalizados
+- **Storage**: Sistema de archivos para fotografías
+
+### Frontend
+- **CSS Framework**: TailwindCSS
+- **JavaScript**: Vanilla JS con componentes interactivos
+- **Iconografía**: SVG interno personalizado
+- **Responsividad**: Mobile-first design
+
+## 🚀 Despliegue en Producción
+
+### Configuración Recomendada
+```bash
+# Optimizar autoloader
+composer install --optimize-autoloader --no-dev
+
+# Compilar assets para producción
+npm run build
+
+# Cachear configuración
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+# Configurar permisos
+chmod -R 755 storage bootstrap/cache
+```
+
+### Variables de Entorno Producción
+```env
+APP_ENV=production
+APP_DEBUG=false
+APP_URL=https://tu-dominio.com
+
+# Configurar base de datos de producción
+DB_CONNECTION=mysql
+DB_HOST=tu-servidor-db
+DB_DATABASE=tu_base_datos
+DB_USERNAME=tu_usuario
+DB_PASSWORD=tu_contraseña_segura
+```
+
+## 🤝 Contribución
+
+1. Fork el proyecto
+2. Crear rama para feature (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver archivo `LICENSE` para más detalles.
+
+## 📞 Soporte
+
+Para soporte técnico o consultas sobre el proyecto:
+- **Institución**: Universidad Tecnológica Nacional
+- **Materia**: Programación IV
+- **Repositorio**: [GitHub](https://github.com/RHEzequiel/app-gestor-usuarios)
+
+---
+
+**Desarrollado con ❤️ para la UTN**
 
 7. Configurar el prefijo de WhatsApp en el archivo `.env` (código de país sin el símbolo +):
 ```

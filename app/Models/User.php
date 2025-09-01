@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'role',
         'phone',
         'professional_url',
         'photo_path',
@@ -53,12 +54,26 @@ class User extends Authenticatable
 
     /**
      * Verifica si el usuario es administrador.
-     *
-     * @return bool
      */
     public function isAdmin(): bool
     {
-        return $this->is_admin === true;
+        return $this->role === 'administrador' || $this->is_admin === true;
+    }
+
+    /**
+     * Verifica si el usuario es profesor.
+     */
+    public function isProfesor(): bool
+    {
+        return $this->role === 'profesor';
+    }
+
+    /**
+     * Verifica si el usuario es alumno.
+     */
+    public function isAlumno(): bool
+    {
+        return $this->role === 'alumno';
     }
 
     /**
